@@ -1,0 +1,60 @@
+version: "3"
+
+services:
+  app: &app
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    working_dir: /opt/rails-api-sandbox
+    volumes:
+      - .:/opt/rails-api-sandbox:cached
+      - data-bundle:/usr/local/bundle
+      - data-node-modules:/opt/rails-api-sandbox/node_modules
+      - ${HOME}/.aws:/root/.aws
+    command: ./bin/rails s -p 80 -b '0.0.0.0'
+    ports:
+      - 80:80
+    links:
+      - postgres
+      - redis
+    environment:
+      DATABASE_URL: postgis://postgres:password@postgres:5432
+      REDIS_URL: redis://redis:6379/0
+      CACHE_REDIS_URL: redis://redis:6379/1
+      SESSION_REDIS_URL: redis://redis:6379/2
+
+  web:
+    <<: *app
+    command: ./bin/rails s -p 80 -b '0.0.0.0'
+    ports:
+      - 80:80
+
+  worker:
+    <<: *app
+    command: ./bin/sidekiq
+
+  postgres:
+    image: kanotan/postgres:11.6-postgis-2.5
+    volumes:
+      - data-postgres:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+
+  redis:
+    image: kanotan/redis:5.0
+    volumes:
+      - data-redis:/data
+    ports:
+      - 6379:6379
+
+volumes:
+  data-bundle:
+    driver: local
+  data-node-modules:
+    driver: local
+  data-postgres:
+    driver: local
+  data-redis:
+    driver: local
