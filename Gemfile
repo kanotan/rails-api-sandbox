@@ -11,12 +11,33 @@ gem 'puma', '~> 4.1'
 gem 'sass-rails', '>= 6'
 
 group :development, :test do
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'awesome_print'
+  gem 'bullet'
+  gem 'factory_bot_rails'
+  gem 'faker'
+  gem 'pry-byebug'
+  gem 'pry-doc'
+  gem 'pry-rails'
+  gem 'rspec-rails'
+  gem 'rubocop', '~> 0.77.0', require: false
+  gem 'rubocop-faker', require: false
+  gem 'rubocop-performance'
+  gem 'rubocop-rspec', require: false
 end
 
 group :development do
-  gem 'web-console', '>= 3.3.0'
-  gem 'listen', '~> 3.2'
+  gem 'annotate'
+  gem 'listen'
+  gem 'meta_request'
   gem 'spring'
+  gem 'spring-commands-rspec'
   gem 'spring-watcher-listen', '~> 2.0.0'
+  gem 'web-console', '>= 3.3.0'
+end
+
+group :test do
+  gem 'database_cleaner'
+  gem 'shoulda-matchers'
+  gem 'simplecov', require: false
+  gem 'webmock'
 end
